@@ -3,22 +3,18 @@ import React, { useState, useEffect, useRef } from 'react';
 interface StudioCardProps {
   name: string;
   url: string;
-  allowsIframe: boolean;
 }
 
 const slugify = (text: string) => {
+  if (!text) return '';
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, '-')       // Replace spaces with -
-    .replace(/[^\w-]+/g, '')    // Remove all non-word chars
-    .replace(/--+/g, '-')       // Replace multiple - with single -
-    .replace(/^-+/, '')         // Trim - from start of text
-    .replace(/-+$/, '');        // Trim - from end of text
+    .replace(/[^a-z0-9]+/g, '-') // Replace all non-alphanumeric characters with a hyphen
+    .replace(/(^-|-$)/g, '');    // Trim hyphens from start and end
 };
 
-const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
-  const [isIntersecting, setIsIntersecting] = useState(false);
+const StudioCard: React.FC<StudioCardProps> = ({ name, url }) => {
   const [hasVisited, setHasVisited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [errorLevel, setErrorLevel] = useState(0);
@@ -31,15 +27,14 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
   const currentSrc = errorLevel === 0 ? localUrl : (errorLevel === 1 ? thumUrl : fallbackUrl);
 
   useEffect(() => {
-    // 1200px buffer: preload just before they scroll in, destroy when perfectly out of view to save extreme amounts of RAM/CPU
+    // Wait 1200px buffer, load images in advance
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setIsIntersecting(true);
-        setHasVisited(true);
-      } else {
-        setIsIntersecting(false);
-      }
-    }, { rootMargin: '1200px 0px 1200px 0px' }); 
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setHasVisited(true);
+        }
+      });
+    }, { rootMargin: '1200px 0px' });
 
     if (cardRef.current) {
       observer.observe(cardRef.current);
@@ -49,19 +44,15 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
   }, []);
 
   return (
-    <a ref={cardRef} href={url} target="_blank" rel="noopener noreferrer" className="studio-card">
+    <a 
+      ref={cardRef} 
+      href={url} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="studio-card"
+    >
       <div className="card-image-wrapper">
-        {(allowsIframe && isIntersecting) ? (
-          <iframe 
-            src={url} 
-            title={`Live preview of ${name}`}
-            className="live-iframe"
-            sandbox="allow-scripts allow-same-origin"
-            loading="lazy"
-            tabIndex={-1}
-            scrolling="no"
-          />
-        ) : hasVisited ? (
+        {hasVisited ? (
           <>
             {!imageLoaded && errorLevel < 2 && (
               <div className="skeleton-loader">
