@@ -27,35 +27,47 @@ body {
   background-attachment: fixed;
 }
 
+/* Lenis Recommended CSS */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none; /* Prevents iframes from trapping the mouse wheel during fast scrolls */
+}
+
 /* App Layout */
 .app-container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 5rem 3rem;
+  padding: 2rem 1.5rem 5rem;
 }
 
-.header {
-  text-align: left;
-  margin-bottom: 4rem;
+.app-header {
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
-.header h1 {
-  font-size: 1.6rem;
+.site-title {
+  font-size: 0.96rem; /* Shrunk by 40% from 1.6rem */
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em; /* slightly wider letter spacing looks better for small logos */
   background: linear-gradient(180deg, #ffffff 0%, #a0a0a0 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin: 0;
 }
 
-.header p {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0;
-  font-weight: 300;
-}
+
 
 /* Filter Panel */
 .filter-panel {
@@ -64,12 +76,37 @@ body {
   justify-content: flex-start;
   gap: 12px;
   margin-top: 1.5rem;
+  margin-bottom: 4rem; /* Added generous margin below as requested */
 }
 
 .filter-label {
   color: var(--text-secondary);
   font-size: 0.95rem;
   margin-right: 8px;
+  margin-left: auto;
+}
+
+.search-input {
+  background: #ffffff; /* pure white by default */
+  border: 1px solid transparent;
+  color: #333333; /* grey text */
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 260px;
+}
+
+.search-input:focus {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+}
+
+.search-input::placeholder {
+  color: #888888;
 }
 
 .sort-btn {
@@ -98,6 +135,14 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
+/* View Toggle Divider */
+.view-toggle-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--card-border);
+  margin: 0 4px;
+}
+
 /* Grid System */
 .grid-container {
   display: grid;
@@ -105,27 +150,65 @@ body {
   gap: 32px;
 }
 
+/* List System */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--card-border);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.list-item:hover {
+  color: #fff;
+  padding-left: 24px;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.list-item .list-link-icon {
+  opacity: 0;
+  transform: translate(-10px, 10px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-left: 16px;
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.list-item:hover .list-link-icon {
+  opacity: 1;
+  transform: translate(0, 0);
+  color: #ffffff;
+}
+
 /* Studio Card */
 .studio-card {
   display: flex;
   flex-direction: column;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 20px;
+  background: transparent;
+  border: none;
   overflow: hidden;
   text-decoration: none;
   color: var(--text-primary);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .studio-card:hover {
   transform: translateY(-6px);
-  border-color: var(--card-hover-border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-  background: rgba(255, 255, 255, 0.04);
 }
 
 /* Iframe Section */
@@ -135,10 +218,28 @@ body {
   aspect-ratio: 16/10;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.01);
-  border-bottom: 1px solid rgba(255,255,255,0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Soft border just for the image to frame it */
+}
+
+.card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card-image.loaded {
+  opacity: 1;
 }
 
 .live-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   /* Make the iframe slightly wider/taller than 400% to push native scrollbars out of the overflow hidden wrapper */
   width: calc(400% + 80px);   
   height: calc(400% + 80px);  
@@ -169,17 +270,18 @@ body {
 
 /* Card Content */
 .card-content {
-  padding: 24px;
+  padding: 16px 4px; /* Reduced vertical padding, slight horizontal constraint */
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: transparent; /* Remove background explicitly */
 }
 
 .card-content h2 {
-  font-size: 1.25rem;
+  font-size: 0.95rem; /* Shrunk by approx 25% from 1.25rem */
   font-weight: 500;
   margin: 0;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.03em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

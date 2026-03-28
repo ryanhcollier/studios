@@ -18,7 +18,8 @@ const slugify = (text: string) => {
 };
 
 const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasVisited, setHasVisited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [errorLevel, setErrorLevel] = useState(0);
   const cardRef = useRef<HTMLAnchorElement>(null);
@@ -30,13 +31,15 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
   const currentSrc = errorLevel === 0 ? localUrl : (errorLevel === 1 ? thumUrl : fallbackUrl);
 
   useEffect(() => {
-    // Only load the iframe/image when the card intersects the viewport
+    // 1200px buffer: preload just before they scroll in, destroy when perfectly out of view to save extreme amounts of RAM/CPU
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        setIsVisible(true);
-        observer.disconnect();
+        setIsIntersecting(true);
+        setHasVisited(true);
+      } else {
+        setIsIntersecting(false);
       }
-    }, { rootMargin: '200px' }); 
+    }, { rootMargin: '1200px 0px 1200px 0px' }); 
 
     if (cardRef.current) {
       observer.observe(cardRef.current);
@@ -48,7 +51,7 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
   return (
     <a ref={cardRef} href={url} target="_blank" rel="noopener noreferrer" className="studio-card">
       <div className="card-image-wrapper">
-        {isVisible && allowsIframe ? (
+        {(allowsIframe && isIntersecting) ? (
           <iframe 
             src={url} 
             title={`Live preview of ${name}`}
@@ -58,7 +61,7 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url, allowsIframe }) => {
             tabIndex={-1}
             scrolling="no"
           />
-        ) : (isVisible && !allowsIframe) ? (
+        ) : hasVisited ? (
           <>
             {!imageLoaded && errorLevel < 2 && (
               <div className="skeleton-loader">
