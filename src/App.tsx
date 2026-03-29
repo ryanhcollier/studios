@@ -16,18 +16,25 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch Live Data directly from Google Sheets
-    fetch(SHEET_CSV_URL)
-      .then(response => response.text())
-      .then(csvText => {
+    // Fetch Live Data from Google Sheets and the Local Whitelist concurrently
+    Promise.all([
+      fetch(SHEET_CSV_URL).then(res => res.text()),
+      fetch('iframe_status.json').then(res => res.json()).catch(() => ({}))
+    ])
+      .then(([csvText, iframeStatus]) => {
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const parsedData = results.data.map((row: any) => ({
-              name: row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0],
-              url: row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1],
-            })).filter(s => s.name && s.url);
+            const parsedData = results.data.map((row: any) => {
+              const name = row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0];
+              const url = row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1];
+              return {
+                name,
+                url,
+                allowsIframe: iframeStatus[url] !== false
+              };
+            }).filter(s => s.name && s.url);
             
             setStudiosData(parsedData);
             
@@ -128,6 +135,7 @@ const App: React.FC = () => {
                key={studio.name} 
                name={studio.name} 
                url={studio.url} 
+               allowsIframe={studio.allowsIframe} 
             />
           ))}
         </main>
