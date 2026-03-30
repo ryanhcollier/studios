@@ -147,6 +147,13 @@ const App: React.FC = () => {
           ))}
         </main>
       )}
+
+      {/* Massive Scaled Footer typography matching the header logo */}
+      {!loading && (
+        <div className="footer-title-wrapper">
+          <h1 className="footer-title">LEGWRK</h1>
+        </div>
+      )}
     </div>
   );
 };

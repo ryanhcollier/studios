@@ -50,7 +50,28 @@ body {
   margin: 0;
 }
 
+/* Massive Scaled Footer */
+.footer-title-wrapper {
+  margin-top: 8rem;
+  margin-bottom: -3rem; /* Tucks it tightly to the visual floor bounding box */
+  width: 100%;
+  text-align: center;
+  overflow: hidden; /* Prevents any incidental x-axis viewport scrollbars */
+}
 
+.footer-title {
+  font-size: clamp(4rem, 17vw, 320px); /* Mathematically scales from mobile up to extreme ultrawide resolution */
+  font-weight: 600;
+  letter-spacing: 0.05em; /* Inherited precisely from the site-title class */
+  background: linear-gradient(180deg, #ffffff 0%, #3a3a3a 100%); /* Deepened the gradient shadow slightly given the massive surface area */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  line-height: 0.75; /* Extremely tight line-height to chop empty visual layout padding off the top/bottom */
+  user-select: none;
+  opacity: 0.9;
+}
 
 /* Filter Panel */
 .filter-panel {
