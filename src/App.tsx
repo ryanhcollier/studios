@@ -21,24 +21,28 @@ const App: React.FC = () => {
       .then(response => response.text())
       .then(csvText => {
         Papa.parse(csvText, {
-          header: true,
+          header: false,
           skipEmptyLines: true,
           complete: (results) => {
             const parsedData = results.data.map((row: any) => {
-              let parsedUrl = row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1];
+              let parsedName = row[0];
+              let parsedUrl = row[1];
+              
+              if (parsedName === 'Studio Name' || parsedName === 'Studio' || parsedName === 'Name') return null;
+              
               if (parsedUrl && !/^https?:\/\//i.test(parsedUrl)) {
                 parsedUrl = 'https://' + parsedUrl;
               }
               return {
-                name: row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0],
+                name: parsedName,
                 url: parsedUrl,
               };
-            }).filter(s => s.name && s.url);
+            }).filter(s => s && s.name && s.url);
             
-            setStudiosData(parsedData);
+            setStudiosData(parsedData as any[]);
             
             // Fisher-Yates shuffle for a robust random initial load
-            const shuffled = [...parsedData];
+            const shuffled = [...parsedData] as any[];
             for (let i = shuffled.length - 1; i > 0; i--) {
               const j = Math.floor(Math.random() * (i + 1));
               [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];

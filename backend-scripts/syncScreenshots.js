@@ -25,13 +25,23 @@ async function syncScreenshots() {
 
   let studios = [];
   Papa.parse(csvText, {
-    header: true,
+    header: false,
     skipEmptyLines: true,
     complete: (results) => {
-      studios = results.data.map(row => ({
-        name: row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0],
-        url: row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1],
-      })).filter(s => s.name && s.url);
+      studios = results.data.map(row => {
+        let parsedName = row[0];
+        let parsedUrl = row[1];
+        
+        if (parsedName === 'Studio Name' || parsedName === 'Studio' || parsedName === 'Name') return null;
+        
+        if (parsedUrl && !/^https?:\/\//i.test(parsedUrl)) {
+          parsedUrl = 'https://' + parsedUrl;
+        }
+        return {
+          name: parsedName,
+          url: parsedUrl,
+        };
+      }).filter(s => s && s.name && s.url);
     }
   });
 
