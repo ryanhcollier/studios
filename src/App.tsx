@@ -24,10 +24,16 @@ const App: React.FC = () => {
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            const parsedData = results.data.map((row: any) => ({
-              name: row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0],
-              url: row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1],
-            })).filter(s => s.name && s.url);
+            const parsedData = results.data.map((row: any) => {
+              let parsedUrl = row['Website URL'] || row['Website'] || row['URL'] || Object.values(row)[1];
+              if (parsedUrl && !/^https?:\/\//i.test(parsedUrl)) {
+                parsedUrl = 'https://' + parsedUrl;
+              }
+              return {
+                name: row['Studio Name'] || row['Studio'] || row['Name'] || Object.values(row)[0],
+                url: parsedUrl,
+              };
+            }).filter(s => s.name && s.url);
             
             setStudiosData(parsedData);
             
