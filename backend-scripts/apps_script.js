@@ -18,8 +18,8 @@
  */
 
 const GITHUB_USERNAME = 'ryanhcollier'; // Replace with your Github username
-const GITHUB_REPO = 'studios'; // Replace with your Github repository name
-const GITHUB_PERSONAL_ACCESS_TOKEN = 'YOUR_GITHUB_PAT_HERE'; // Requires 'repo' scope token
+const GITHUB_REPO = 'legwrk'; // Replace with your Github repository name
+const GITHUB_PERSONAL_ACCESS_TOKEN = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN'; // Requires 'repo' scope token
 
 function onEditTrigger(e) {
   if(!e || !e.range) return;
@@ -27,12 +27,11 @@ function onEditTrigger(e) {
   if (sheet.getIndex() !== 1) return;
   
   const row = e.range.getRow();
-  const col = e.range.getColumn();
   
-  // Assuming 'URL' is Col B (2). 
-  if (col !== 2) return;
   if (row <= 1) return;
   
+  // We check if the edit has a valid Name and URL. If it does, we ping GitHub!
+  // This allows copy/pasting entire rows to safely trigger the action.
   const currentName = sheet.getRange(row, 1).getValue(); 
   const currentUrl = sheet.getRange(row, 2).getValue();
 
