@@ -104,8 +104,8 @@ const App: React.FC = () => {
           <h1 className="site-title">LEGWRK NYC</h1>
         </a>
         <nav className="header-nav">
-          <a href="#" className="nav-link">Submit</a>
-          <a href="#" className="nav-link">Info</a>
+          <a href="https://legwrk.com/submit" className="nav-link">Submit</a>
+          <a href="https://legwrk.com/about" className="nav-link">About</a>
         </nav>
       </header>
 
