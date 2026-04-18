@@ -100,7 +100,7 @@ function doPost(e) {
       const subject = "Legwrk: New Studio Submitted!";
       const body = `A new studio has been submitted for review:\n\nName: ${name}\nURL: ${url}\n\nPlease check your Google Sheet.`;
       
-      MailApp.sendEmail(emailAddress, subject, body);
+      GmailApp.sendEmail(emailAddress, subject, body);
       
       // Note: We deliberately do NOT call pingGitHub() here to keep it in a review state.
       
