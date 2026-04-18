@@ -63,3 +63,54 @@ function pingGitHub() {
     Logger.log('Failed to dispatch webhook: ' + e.message);
   }
 }
+
+/**
+ * Handle POST requests from the `/submit` form.
+ * 
+ * DEPLOYMENT INSTRUCTIONS:
+ * 1. Click "Deploy" > "New deployment" in the top right of Apps Script editor.
+ * 2. Click the gear icon next to "Select type" and check "Web app".
+ * 3. Configuration:
+ *    - Description: "Form Handler"
+ *    - Execute as: "Me" (your Google account)
+ *    - Who has access: "Anyone"
+ * 4. Click "Deploy". Authorize permissions if prompted.
+ * 5. Copy the resulting "Web app URL" and paste it into public/submit/index.html.
+ */
+function doPost(e) {
+  try {
+    // Parse the JSON payload sent from the form
+    const data = JSON.parse(e.postData.contents);
+    const name = data.name;
+    const url = data.url;
+    
+    if (name && url) {
+      // Assumes you have a sheet named 'Submissions' for the review queue
+      const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Submissions"); 
+      
+      // Safety check in case the tab isn't created yet
+      if (!sheet) {
+        throw new Error("Submissions tab not found. Please create it in your Google Sheet.");
+      }
+      
+      sheet.appendRow([name, url]);
+      
+      // Send a simple email notification to the account owner
+      const emailAddress = Session.getEffectiveUser().getEmail();
+      const subject = "Legwrk: New Studio Submitted!";
+      const body = `A new studio has been submitted for review:\n\nName: ${name}\nURL: ${url}\n\nPlease check your Google Sheet.`;
+      
+      MailApp.sendEmail(emailAddress, subject, body);
+      
+      // Note: We deliberately do NOT call pingGitHub() here to keep it in a review state.
+      
+      return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } else {
+      throw new Error("Missing name or url");
+    }
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: 'error', message: error.message }))
+        .setMimeType(ContentService.MimeType.JSON);
+  }
+}

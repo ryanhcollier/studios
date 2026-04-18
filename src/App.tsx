@@ -87,7 +87,7 @@ const App: React.FC = () => {
     return (
       <div className="app-container">
         <header className="app-header">
-          <h1 className="site-title" style={{ opacity: 0.5, animation: 'shimmer 1.5s infinite' }}>LEGWRK NYC</h1>
+          <h1 className="site-title" style={{ opacity: 0.5 }}>LEGWRK NYC</h1>
         </header>
         <div className="filter-panel" style={{ opacity: 0, pointerEvents: 'none' }}>
           <input type="text" className="search-input" />

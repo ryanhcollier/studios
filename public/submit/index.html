@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit - LEGWRK NYC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      min-height: 100vh;
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+    .app-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* Header matching */
+    .app-header {
+      margin-bottom: 10rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-title {
+      font-size: 0.96rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #333333;
+      margin: 0;
+    }
+    .header-nav {
+      display: flex;
+      gap: 24px;
+      opacity: 0;
+      animation: fadeInNav 1.2s ease-in forwards;
+      animation-delay: 0.2s;
+    }
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #000000;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .nav-link:hover {
+      opacity: 0.5;
+    }
+
+    /* Submit Block Formatting */
+    .submit-container {
+      max-width: 600px;
+      padding-left: 2rem;
+      opacity: 0;
+      animation: fadeIn 1.2s ease-in forwards;
+    }
+    .submit-container h1 {
+      color: #333333;
+      font-size: 3rem;
+      font-weight: 400;
+      line-height: 1.1;
+      margin: 0 0 1rem 0;
+      letter-spacing: -0.01em;
+    }
+    .submit-container p {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    /* Form Styles matching index.css inputs & buttons */
+    .submit-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group label {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .search-input {
+      background: transparent;
+      border: 1px solid #000000;
+      color: #000000;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .search-input:focus {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .sort-btn {
+      background: #000000;
+      border: 1px solid #000000;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      align-self: flex-start;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sort-btn:hover {
+      background: transparent;
+      color: #000000;
+    }
+
+    .sort-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-message {
+      margin-top: 2rem;
+      font-size: 1rem;
+      display: none;
+    }
+    .form-message.success {
+      display: block;
+      color: #2e7d32;
+    }
+    .form-message.error {
+      display: block;
+      color: #d32f2f;
+    }
+
+    @keyframes fadeInNav {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <a href="https://legwrk.com" style="text-decoration: none;">
+        <h1 class="site-title">LEGWRK NYC</h1>
+      </a>
+      <nav class="header-nav">
+        <a href="https://legwrk.com/submit" class="nav-link">Submit</a>
+        <a href="https://legwrk.com/about" class="nav-link">About</a>
+      </nav>
+    </header>
+
+    <div class="submit-container">
+      <h1>Submit a Studio</h1>
+      <p>Add a new creative studio to the database for review.</p>
+      
+      <form id="studioForm" class="submit-form">
+        <div class="input-group">
+          <label for="studioName">Studio Name</label>
+          <input type="text" id="studioName" name="studioName" class="search-input" placeholder="e.g. Pentagon" required />
+        </div>
+        
+        <div class="input-group">
+          <label for="studioUrl">Studio URL</label>
+          <input type="url" id="studioUrl" name="studioUrl" class="search-input" placeholder="https://" required />
+        </div>
+
+        <button type="submit" id="submitBtn" class="sort-btn">Submit</button>
+      </form>
+      
+      <div id="formMessage" class="form-message"></div>
+    </div>
+  </div>
+
+  <script>
+    // IMPORTANT: Replce this placeholder with your deployed Google Apps Script Web App URL
+    const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+
+    const form = document.getElementById('studioForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const messageDiv = document.getElementById('formMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('studioName').value;
+      const url = document.getElementById('studioUrl').value;
+      
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Submitting...';
+      messageDiv.className = 'form-message';
+      messageDiv.innerText = '';
+
+      if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL') {
+        messageDiv.className = 'form-message error';
+        messageDiv.innerText = 'Error: Apps Script URL not configured yet. Set APPS_SCRIPT_URL in index.html first.';
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+        return;
+      }
+
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          // Note: using plain text payload instead of JSON or FormData to avoid CORS preflight blocking in some configs
+          // Apps Script doPost receives stringified JSON seamlessly this way.
+          body: JSON.stringify({ name, url }),
+          headers: {
+             "Content-Type": "text/plain;charset=utf-8",
+          }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          messageDiv.className = 'form-message success';
+          messageDiv.innerText = 'Thank you! The studio has been submitted for review.';
+          form.reset();
+        } else {
+          throw new Error('Server returned an error');
+        }
+      } catch (err) {
+        messageDiv.className = 'form-message error';
+        messageDiv.innerText = 'An error occurred. Please try again later.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Submit';
+      }
+    });
+  </script>
+</body>
+</html>

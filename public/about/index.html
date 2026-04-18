@@ -10,43 +10,69 @@
       margin: 0;
       padding: 0;
       background-color: #fafafa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
       font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
     }
+    .app-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
+    }
+
+    /* Cloned native header logic rendering the identical menu mapping */
+    .app-header {
+      margin-bottom: 15rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .site-title {
+      font-size: 0.96rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #333333;
+      margin: 0;
+    }
+    .header-nav {
+      display: flex;
+      gap: 24px;
+      opacity: 0;
+      animation: fadeInNav 1.2s ease-in forwards;
+      animation-delay: 0.2s;
+    }
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #000000;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .nav-link:hover {
+      opacity: 0.5;
+    }
+
+    /* Core Page Formatting */
     .about-container {
       max-width: 900px;
-      padding: 2rem;
-      text-align: center;
+      padding-left: 2rem;
       opacity: 0;
       animation: fadeIn 1.2s ease-in forwards;
     }
-    h1 {
+    h1.hero-statement {
       color: #333333;
-      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+      font-size: clamp(3rem, 6.6vw, 5.4rem); /* Amplified exactly 20% mathematically */
       font-weight: 400;
       line-height: 1.1;
       margin: 0;
       letter-spacing: -0.01em;
-    }
-    .back-link {
-      display: inline-block;
-      margin-top: 4rem;
-      color: #000000;
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: 500;
-      border: 1px solid #000000;
-      padding: 10px 24px;
-      border-radius: 6px;
-      transition: all 0.3s;
-    }
-    .back-link:hover {
-      background: rgba(0, 0, 0, 0.05);
+      text-align: left; /* Shifted from center anchor */
     }
 
+    @keyframes fadeInNav {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
     @keyframes fadeIn {
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -54,9 +80,20 @@
   </style>
 </head>
 <body>
-  <div class="about-container">
-    <h1>LEGWRK is a personal project created by Ryan Collier as a running list of New York City creative studios.</h1>
-    <a href="/" class="back-link">Return to Directory</a>
+  <div class="app-container">
+    <header class="app-header">
+      <a href="https://legwrk.com" style="text-decoration: none;">
+        <h1 class="site-title">LEGWRK NYC</h1>
+      </a>
+      <nav class="header-nav">
+        <a href="https://legwrk.com/submit" class="nav-link">Submit</a>
+        <a href="https://legwrk.com/about" class="nav-link">About</a>
+      </nav>
+    </header>
+
+    <div class="about-container">
+      <h1 class="hero-statement">LEGWRK is a personal project created by Ryan Collier as a running list of New York City creative studios.</h1>
+    </div>
   </div>
 </body>
 </html>
