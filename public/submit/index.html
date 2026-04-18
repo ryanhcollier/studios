@@ -224,28 +224,25 @@
       }
 
       try {
-        const response = await fetch(APPS_SCRIPT_URL, {
+        // mode: 'no-cors' prevents the browser from throwing an error when Google redirects the response
+        await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
-          // Note: using plain text payload instead of JSON or FormData to avoid CORS preflight blocking in some configs
-          // Apps Script doPost receives stringified JSON seamlessly this way.
+          mode: 'no-cors',
           body: JSON.stringify({ name, url }),
           headers: {
              "Content-Type": "text/plain;charset=utf-8",
           }
         });
         
-        const result = await response.json();
+        // Because of 'no-cors', the response is opaque and we cannot read JSON.
+        // Since it didn't throw a network disconnect, we assume the data reached Google safely!
+        messageDiv.className = 'form-message success';
+        messageDiv.innerText = 'Thank you! The studio has been submitted for review.';
+        form.reset();
         
-        if (result.status === 'success') {
-          messageDiv.className = 'form-message success';
-          messageDiv.innerText = 'Thank you! The studio has been submitted for review.';
-          form.reset();
-        } else {
-          throw new Error('Server returned an error');
-        }
       } catch (err) {
         messageDiv.className = 'form-message error';
-        messageDiv.innerText = 'An error occurred. Please try again later.';
+        messageDiv.innerText = 'Error: ' + err.message;
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = 'Submit';
