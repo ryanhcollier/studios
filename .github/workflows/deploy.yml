@@ -29,8 +29,8 @@ jobs:
       - name: FTP Deployment
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.LEGWRK_FTP_HOST }}
-          username: ${{ secrets.LEGWRK_FTP_USER }}
-          password: ${{ secrets.LEGWRK_FTP_PASSWORD }}
-          server-dir: ${{ secrets.LEGWRK_FTP_DIR }}/
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_DIR }}/
           local-dir: ./dist/
