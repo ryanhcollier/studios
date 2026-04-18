@@ -18,15 +18,12 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Attempt to discover a custom hero from the /hero folder on the server
-    fetch('https://legwrk.com/hero/')
-      .then(res => res.ok ? res.text() : Promise.reject('No hero directory'))
-      .then(html => {
-        const match = html.match(/href="([^"]+\.(jpg|jpeg|mp4))"/i);
-        if (match) {
-           let filename = match[1];
-           const parts = filename.split('/');
-           filename = parts[parts.length - 1];
+    // Attempt to discover a custom hero from the generated index.json
+    fetch('https://legwrk.com/hero/index.json')
+      .then(res => res.ok ? res.json() : Promise.reject('No hero index found'))
+      .then((files: string[]) => {
+        if (files && files.length > 0) {
+           let filename = files[0];
            const decodedFn = decodeURIComponent(filename);
            const nameWithoutExt = decodedFn.replace(/\.(jpg|jpeg|mp4)$/i, '');
            setCustomHero({

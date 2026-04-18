@@ -5,8 +5,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "generate-hero-index": "node -e \"const f=require('fs');const files=f.existsSync('./public/hero')?f.readdirSync('./public/hero').filter(x=>x.match(/\\\\.(jpg|jpeg|mp4)$/i)):[];f.writeFileSync('./public/hero/index.json',JSON.stringify(files))\"",
+    "dev": "npm run generate-hero-index && vite",
+    "build": "npm run generate-hero-index && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
