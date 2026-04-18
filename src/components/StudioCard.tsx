@@ -20,7 +20,7 @@ const StudioCard: React.FC<StudioCardProps> = ({ name, url }) => {
   const [errorLevel, setErrorLevel] = useState(0);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
-  const localUrl = `screenshots/${slugify(name)}.jpg`;
+  const localUrl = `screenshots/${slugify(name)}.jpg?v=${import.meta.env.VITE_APP_VERSION}`;
   const thumUrl = `https://image.thum.io/get/width/800/crop/600/noanimate/${encodeURIComponent(url)}`;
   const fallbackUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`;
 
