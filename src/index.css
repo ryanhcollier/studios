@@ -47,9 +47,17 @@ body {
   margin: 0;
 }
 
+@keyframes fadeInNav {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .header-nav {
   display: flex;
   gap: 24px;
+  opacity: 0;
+  animation: fadeInNav 1.2s ease-in forwards;
+  animation-delay: 0.2s;
 }
 
 .nav-link {
