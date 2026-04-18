@@ -88,6 +88,12 @@ const App: React.FC = () => {
     });
   }, []);
 
+  const heroLinkUrl = useMemo(() => {
+    if (!customHero || !studiosData.length) return null;
+    const match = studiosData.find(s => s.name.toLowerCase() === customHero.name.toLowerCase());
+    return match ? match.url : null;
+  }, [customHero, studiosData]);
+
   const displayedStudios = useMemo(() => {
     if (!studiosData.length) return [];
     
@@ -131,7 +137,13 @@ const App: React.FC = () => {
 
       {/* Hero Section */}
       {!loading && customHero ? (
-        <div className="studio-card hero-card" style={{ cursor: 'default' }}>
+        <a 
+          href={heroLinkUrl || undefined} 
+          target={heroLinkUrl ? "_blank" : undefined}
+          rel={heroLinkUrl ? "noopener noreferrer" : undefined}
+          className="studio-card hero-card"
+          style={!heroLinkUrl ? { cursor: 'default', textDecoration: 'none' } : { textDecoration: 'none' }}
+        >
           <div className="card-image-wrapper hero-image-wrapper">
             {customHero.isVideo ? (
                <video 
@@ -153,10 +165,11 @@ const App: React.FC = () => {
             )}
             <div className="card-overlay" />
           </div>
-          <div className="card-content" style={{ pointerEvents: 'none' }}>
+          <div className="card-content">
             <h2>Featured Content From {customHero.name}</h2>
+            {heroLinkUrl && <span className="card-link-icon">↗</span>}
           </div>
-        </div>
+        </a>
       ) : (!loading && heroStudio && (
         <a 
           href={heroStudio.url} 
