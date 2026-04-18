@@ -128,7 +128,8 @@ function doPost(e) {
       // Hardcode your email here to bypass any Google Session permission blocks
       const emailAddress = "ryanhcollier@gmail.com"; 
       const subject = "Legwrk: New Studio Submitted!";
-      const body = `A new studio has been submitted for review:\n\nName: ${name}\nURL: ${url}\n\nPlease check your Google Sheet.`;
+      const sheetUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl();
+      const body = `A new studio has been submitted for review:\n\nName: ${name}\nURL: ${url}\n\nReview it here: ${sheetUrl}`;
       
       GmailApp.sendEmail(emailAddress, subject, body);
       
