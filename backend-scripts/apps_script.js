@@ -24,19 +24,46 @@ const GITHUB_PERSONAL_ACCESS_TOKEN = 'YOUR_GITHUB_PERSONAL_ACCESS_TOKEN'; // Req
 function onEditTrigger(e) {
   if(!e || !e.range) return;
   const sheet = e.source.getActiveSheet();
-  if (sheet.getIndex() !== 1) return;
-  
   const row = e.range.getRow();
   
+  // Ignore header row
   if (row <= 1) return;
   
-  // We check if the edit has a valid Name and URL. If it does, we ping GitHub!
-  // This allows copy/pasting entire rows to safely trigger the action.
-  const currentName = sheet.getRange(row, 1).getValue(); 
-  const currentUrl = sheet.getRange(row, 2).getValue();
+  // === NEW: Automated Review Workflow ===
+  if (sheet.getName() === "Submissions") {
+    const col = e.range.getColumn();
+    
+    // Check if the edit happened in Column 3 (Column C) and is checked (TRUE)
+    if (col === 3 && (e.value === "TRUE" || e.value === true)) {
+      const name = sheet.getRange(row, 1).getValue();
+      const url = sheet.getRange(row, 2).getValue();
+      
+      if (name && url) {
+        // Find the main database sheet (assuming it is the first tab, Index 0)
+        const mainSheet = e.source.getSheets()[0];
+        
+        // Append the verified name and url to the main sheet
+        mainSheet.appendRow([name, url]);
+        
+        // Delete the row from the Submissions queue cleanly
+        sheet.deleteRow(row);
+        
+        // Tell GitHub to spin up a dynamic website update
+        pingGitHub();
+      }
+    }
+    return; // Exit early, do not run the rest of the script.
+  }
+  
+  // === EXISTING: Safe Main-Sheet Workflow ===
+  // Apps Script indexes sheet objects starting at 1. If edit is on Main Sheet:
+  if (sheet.getIndex() === 1) {
+    const currentName = sheet.getRange(row, 1).getValue(); 
+    const currentUrl = sheet.getRange(row, 2).getValue();
 
-  if(currentName && currentUrl) {
-    pingGitHub();
+    if(currentName && currentUrl) {
+      pingGitHub();
+    }
   }
 }
 
