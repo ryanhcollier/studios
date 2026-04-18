@@ -14,9 +14,32 @@ const App: React.FC = () => {
   const [studiosData, setStudiosData] = useState<any[]>([]);
   const [randomizedStudios, setRandomizedStudios] = useState<any[]>([]);
   const [heroStudio, setHeroStudio] = useState<any>(null);
+  const [customHero, setCustomHero] = useState<{name: string, url: string, isVideo: boolean} | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Attempt to discover a custom hero from the /hero folder on the server
+    fetch('https://legwrk.com/hero/')
+      .then(res => res.ok ? res.text() : Promise.reject('No hero directory'))
+      .then(html => {
+        const match = html.match(/href="([^"]+\.(jpg|jpeg|mp4))"/i);
+        if (match) {
+           let filename = match[1];
+           const parts = filename.split('/');
+           filename = parts[parts.length - 1];
+           const decodedFn = decodeURIComponent(filename);
+           const nameWithoutExt = decodedFn.replace(/\.(jpg|jpeg|mp4)$/i, '');
+           setCustomHero({
+             name: nameWithoutExt,
+             url: `https://legwrk.com/hero/${filename}`,
+             isVideo: /\.mp4$/i.test(filename)
+           });
+        }
+      })
+      .catch((err) => {
+         console.warn("Could not find custom hero folder or file, falling back to iframe:", err);
+      });
+
     // Fetch Live Data directly from Google Sheets alongside iframe compatibility list
     Promise.all([
       fetch(SHEET_CSV_URL).then(res => res.text()),
@@ -110,7 +133,34 @@ const App: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      {!loading && heroStudio && (
+      {!loading && customHero ? (
+        <div className="studio-card hero-card" style={{ cursor: 'default' }}>
+          <div className="card-image-wrapper hero-image-wrapper">
+            {customHero.isVideo ? (
+               <video 
+                 src={customHero.url} 
+                 className="hero-iframe" 
+                 style={{ objectFit: 'cover' }}
+                 autoPlay 
+                 loop 
+                 muted 
+                 playsInline 
+               />
+            ) : (
+               <img 
+                 src={customHero.url} 
+                 alt={customHero.name} 
+                 className="hero-iframe" 
+                 style={{ objectFit: 'cover', width: '100%', height: '100%' }} 
+               />
+            )}
+            <div className="card-overlay" />
+          </div>
+          <div className="card-content" style={{ pointerEvents: 'none' }}>
+            <h2>Featured Content From {customHero.name}</h2>
+          </div>
+        </div>
+      ) : (!loading && heroStudio && (
         <a 
           href={heroStudio.url} 
           target="_blank" 
@@ -132,7 +182,7 @@ const App: React.FC = () => {
             <span className="card-link-icon">↗</span>
           </div>
         </a>
-      )}
+      ))}
 
       <div className="filter-panel">
           <input 
