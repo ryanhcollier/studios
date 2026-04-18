@@ -29,11 +29,14 @@ body {
   max-width: 1600px;
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;
+  overflow-x: hidden; /* Globally suppresses viewport scrollbars spawned by the 10% scaling transform bleeding past margins */
 }
 
 .app-header {
-  margin-bottom: 2rem;
-  text-align: center;
+  margin-bottom: 10rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .site-title {
@@ -44,24 +47,48 @@ body {
   margin: 0;
 }
 
+.header-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #000000;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.nav-link:hover {
+  opacity: 0.5;
+}
+
 /* Massive Scaled Footer */
 .footer-title-wrapper {
   margin-top: 8rem;
-  margin-bottom: -3rem; /* Tucks it tightly to the visual floor bounding box */
-  width: 100%;
+  margin-bottom: 0rem; /* Loosened bottom tuck constraint safely to allow the 10% geometry blast */
+  padding: 4rem 0 2rem 0; /* Huge vertical safety paddings guaranteeing the letters never clip into the physical ceiling/floor */
+  width: 95%; /* Constrained strictly 95% interior scale relative to primary grid boundaries */
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
-  overflow: hidden; /* Prevents any incidental x-axis viewport scrollbars */
+  overflow: visible; /* Unblocked overflow explicitly resolving the guillotine clip effect permanently */
+  container-type: inline-size; /* Establish isolated wrapper scale parameter */
 }
 
 .footer-title {
-  font-size: clamp(4rem, 17vw, 320px); /* Mathematically scales from mobile up to extreme ultrawide resolution */
+  font-size: 21.5cqi; /* Dynamically lock mathematical type framing to 95% of grid container widths natively */
   font-weight: 600;
   letter-spacing: 0.05em; /* Inherited precisely from the site-title class */
-  color: var(--text-primary);
+  color: #ebebeb; /* Extremely subtle ghost watermark slightly darker than the #fafafa global app background */
   margin: 0;
+  margin-right: -0.05em; /* Optical centering correction to balance letter-spacing weight */
   line-height: 0.75; /* Extremely tight line-height to chop empty visual layout padding off the top/bottom */
   user-select: none;
   opacity: 0.9;
+  transform: scale(1.1); /* Explicit hardware scalar forcing a 10% geometry explosion */
+  transform-origin: bottom center; /* Strictly locked focal point guaranteeing vectors grow upwards and outwards off the floor */
 }
 
 /* Filter Panel */
@@ -82,11 +109,11 @@ body {
 }
 
 .search-input {
-  background: #ffffff; /* pure white by default */
-  border: 1px solid transparent;
-  color: #333333; /* grey text */
+  background: transparent;
+  border: 1px solid #000000;
+  color: #000000;
   padding: 8px 18px;
-  border-radius: 24px;
+  border-radius: 6px;
   font-family: inherit;
   font-size: 0.9rem;
   outline: none;
@@ -95,21 +122,21 @@ body {
 }
 
 .search-input:focus {
-  border-color: rgba(0, 0, 0, 0.2);
-  background: #ffffff;
+  border-color: #000000;
+  background: transparent;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .search-input::placeholder {
-  color: #888888;
+  color: #aaaaaa;
 }
 
 .sort-btn {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid #000000;
+  color: #000000;
   padding: 8px 18px;
-  border-radius: 24px;
+  border-radius: 6px;
   font-family: inherit;
   font-size: 0.9rem;
   cursor: pointer;
@@ -119,15 +146,16 @@ body {
 }
 
 .sort-btn:hover {
-  border-color: rgba(0, 0, 0, 0.2);
-  color: var(--text-primary);
+  background: rgba(0, 0, 0, 0.05); /* Subtle dark wash on hover */
+  border-color: #000000;
+  color: #000000;
 }
 
 .sort-btn.active {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.15);
-  color: var(--text-primary);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 /* View Toggle Divider */
@@ -204,6 +232,41 @@ body {
 
 .studio-card:hover {
   transform: translateY(-6px);
+}
+
+/* Hero Card extensions */
+.hero-card {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+/* Disable inherited hover states for the Hero */
+.studio-card.hero-card:hover {
+  transform: none;
+}
+
+.studio-card.hero-card:hover .card-overlay {
+  opacity: 0.8; 
+}
+
+.studio-card.hero-card:hover .card-link-icon {
+  transform: none;
+  color: var(--text-secondary);
+}
+
+.hero-image-wrapper {
+  aspect-ratio: 21 / 9; 
+}
+
+.hero-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% + 32px); /* Extends right edge to deliberately eclipse native browser scrollbars */
+  height: 100%;  
+  border: none;
+  pointer-events: none; /* Passes click to the wrapping anchor tag */
+  background: #fff;
 }
 
 /* Iframe Section */
