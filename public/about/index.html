@@ -74,18 +74,21 @@
     /* Core Page Formatting */
     .about-container {
       max-width: 900px;
-      padding-left: 2rem;
+      padding-left: 0;
       opacity: 0;
       animation: fadeIn 1.2s ease-in forwards;
     }
     h1.hero-statement {
       color: #333333;
-      font-size: clamp(3rem, 6.6vw, 5.4rem); /* Amplified exactly 20% mathematically */
-      font-weight: 400;
-      line-height: 1.1;
+      font-size: clamp(0.9rem, 1.98vw, 1.62rem); /* Reduced mathematically by exactly 70% */
+      font-weight: 300;
+      line-height: 1.4;
       margin: 0;
-      letter-spacing: -0.01em;
-      text-align: left; /* Shifted from center anchor */
+      letter-spacing: 0em;
+      text-align: left;
+    }
+    .pale-blue {
+      color: #8cb4d6;
     }
 
     @keyframes fadeInNav {
@@ -111,8 +114,40 @@
     </header>
 
     <div class="about-container">
-      <h1 class="hero-statement">LEGWRK is a personal project created by Ryan Collier as a running list of New York City creative studios.</h1>
+      <h1 class="hero-statement">LEGWRK is an ongoing project by Ryan Collier currently showcasing <span id="studio-count" class="pale-blue">*</span> studios in New York City.</h1>
     </div>
   </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script>
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1U60AENQujuIeKnW_qtsH2BCL9UFjoHqOtr4aGZBDFWA/export?format=csv';
+
+    async function fetchStudioCount() {
+      try {
+        const response = await fetch(SHEET_CSV_URL);
+        const csvText = await response.text();
+        
+        Papa.parse(csvText, {
+          header: false,
+          skipEmptyLines: true,
+          complete: function(results) {
+            let count = 0;
+            results.data.forEach(row => {
+              const name = row[0];
+              const url = row[1];
+              if (name && url && name !== 'Studio Name' && name !== 'Studio' && name !== 'Name') {
+                count++;
+              }
+            });
+            document.getElementById('studio-count').innerText = count;
+          }
+        });
+      } catch (err) {
+        console.error("Failed to fetch studio count:", err);
+      }
+    }
+
+    fetchStudioCount();
+  </script>
 </body>
 </html>
