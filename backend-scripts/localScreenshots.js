@@ -48,7 +48,15 @@ async function generateLocalScreenshots() {
   // Boot Puppeteer. 
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--window-size=1200,900']
+    args: [
+      '--no-sandbox', 
+      '--disable-setuid-sandbox', 
+      '--disable-dev-shm-usage', 
+      '--window-size=1600,1200',
+      '--ignore-gpu-blocklist',
+      '--enable-webgl',
+      '--disable-blink-features=AutomationControlled'
+    ]
   });
 
   const screenshotsDir = path.join(process.cwd(), '../public/screenshots');
@@ -64,7 +72,8 @@ async function generateLocalScreenshots() {
     let page;
     try {
       page = await browser.newPage();
-      await page.setViewport({ width: 1200, height: 900 });
+      await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+      await page.setViewport({ width: 1600, height: 1200 });
 
       console.log(`[Pending] Loading ${studio.name} (${studio.url})...`);
       
@@ -72,10 +81,38 @@ async function generateLocalScreenshots() {
       if (!finalUrl.startsWith('http')) finalUrl = 'https://' + finalUrl;
 
       // Navigate and wait for network to effectively sit idle
-      await page.goto(finalUrl, { waitUntil: 'networkidle2', timeout: 45000 }).catch(e => {
-        console.log(`[Warning] Reached initial navigation timeout for ${studio.name}, proceeding to 10s wait anyway.`);
+      await page.goto(finalUrl, { waitUntil: 'load', timeout: 45000 }).catch(e => {
+        console.log(`[Warning] Reached initial navigation timeout for ${studio.name}, proceeding to interactions anyway.`);
       });
       
+      // EXPLICIT WORKAROUNDS FOR LOADING SCREENS & FADE INS
+      console.log(`[Interacting] Triggering scroll and clicks for ${studio.name}...`);
+      
+      try {
+        // 1. Move mouse and click dead center to try and bypass "Click to Enter" interaction gates
+        await page.mouse.move(800, 600);
+        await page.mouse.click(800, 600);
+        
+        // 2. Scroll gently down to trigger IntersectionObservers (fade-ins) and then snap back to top
+        await page.evaluate(async () => {
+          await new Promise((resolve) => {
+            let totalHeight = 0;
+            let distance = 250;
+            let timer = setInterval(() => {
+              window.scrollBy(0, distance);
+              totalHeight += distance;
+              if (totalHeight >= 1200) {
+                clearInterval(timer);
+                window.scrollTo({ top: 0, behavior: 'instant' });
+                resolve();
+              }
+            }, 300);
+          });
+        });
+      } catch(err) {
+        // Silently catch interacting errors
+      }
+
       // EXPLICIT 10 SECOND WAIT FOR ANIMATIONS TO COMPLETE
       console.log(`[Timer] 10 second animation hard-delay started for ${studio.name}...`);
       await new Promise(r => setTimeout(r, 10000));
