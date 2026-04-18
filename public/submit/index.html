@@ -186,7 +186,7 @@
         
         <div class="input-group">
           <label for="studioUrl">Studio URL</label>
-          <input type="url" id="studioUrl" name="studioUrl" class="search-input" placeholder="https://" required />
+          <input type="text" id="studioUrl" name="studioUrl" class="search-input" placeholder="e.g. legwrk.com or https://legwrk.com" required />
         </div>
 
         <button type="submit" id="submitBtn" class="sort-btn">Submit</button>
@@ -207,8 +207,13 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const name = document.getElementById('studioName').value;
-      const url = document.getElementById('studioUrl').value;
+      const name = document.getElementById('studioName').value.trim();
+      let url = document.getElementById('studioUrl').value.trim();
+      
+      // Auto-prefix https:// if they didn't include it
+      if (url && !/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
       
       submitBtn.disabled = true;
       submitBtn.innerText = 'Submitting...';
