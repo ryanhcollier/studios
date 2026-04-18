@@ -16,6 +16,10 @@
   padding: 0;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-color);
@@ -24,12 +28,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* App Layout */
 .app-container {
   max-width: 1600px;
   margin: 0 auto;
   padding: 2rem 1.5rem 5rem;
-  overflow-x: hidden; /* Globally suppresses viewport scrollbars spawned by the 10% scaling transform bleeding past margins */
+  overflow-x: hidden;
 }
 
 .app-header {
