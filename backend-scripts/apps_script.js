@@ -120,7 +120,10 @@ function doPost(e) {
         throw new Error("Submissions tab not found. Please create it in your Google Sheet.");
       }
       
+      // Append the data, and automatically spawn a fresh checkbox!
       sheet.appendRow([name, url]);
+      const newRow = sheet.getLastRow();
+      sheet.getRange(newRow, 3).insertCheckboxes();
       
       // Hardcode your email here to bypass any Google Session permission blocks
       const emailAddress = "ryanhcollier@gmail.com"; 
