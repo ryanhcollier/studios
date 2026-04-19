@@ -234,12 +234,23 @@ const App: React.FC = () => {
 
       {viewMode === 'grid' ? (
         <main className="grid-container">
-          {displayedStudios.map((studio) => (
-            <StudioCard 
-               key={studio.name} 
-               name={studio.name} 
-               url={studio.url} 
-            />
+          {displayedStudios.map((studio, index) => (
+            <React.Fragment key={studio.name}>
+              {index === 3 && !searchQuery.trim() && (
+                <div className="studio-card">
+                  <div className="card-image-wrapper" style={{ background: 'rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(0,0,0,0.08)' }}>
+                    <span style={{ color: '#aaaaaa', fontSize: '0.8rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Featured Space</span>
+                  </div>
+                  <div className="card-content">
+                    <h2 style={{ color: '#aaaaaa' }}>Promoted</h2>
+                  </div>
+                </div>
+              )}
+              <StudioCard 
+                 name={studio.name} 
+                 url={studio.url} 
+              />
+            </React.Fragment>
           ))}
         </main>
       ) : (
