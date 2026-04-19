@@ -15,9 +15,17 @@ const App: React.FC = () => {
   const [randomizedStudios, setRandomizedStudios] = useState<any[]>([]);
   const [heroStudio, setHeroStudio] = useState<any>(null);
   const [customHero, setCustomHero] = useState<{name: string, url: string, isVideo: boolean} | null>(null);
+  const [promotedConfig, setPromotedConfig] = useState<{active: boolean, imageUrl: string, linkUrl: string} | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetch('/promoted.json')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) setPromotedConfig(data);
+      })
+      .catch(() => null);
+
     // Attempt to discover a custom hero from the generated index.json
     fetch('https://legwrk.com/hero/index.json')
       .then(res => res.ok ? res.json() : Promise.reject('No hero index found'))
@@ -237,14 +245,27 @@ const App: React.FC = () => {
           {displayedStudios.map((studio, index) => (
             <React.Fragment key={studio.name}>
               {index === 3 && !searchQuery.trim() && (
-                <div className="studio-card">
-                  <div className="card-image-wrapper" style={{ background: 'rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(0,0,0,0.08)' }}>
-                    <span style={{ color: '#aaaaaa', fontSize: '0.8rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Featured Space</span>
+                promotedConfig?.active ? (
+                  <a href={promotedConfig.linkUrl} target="_blank" rel="noopener noreferrer" className="studio-card">
+                    <div className="card-image-wrapper">
+                      <img src={promotedConfig.imageUrl} alt="Promoted Content" className="card-image loaded" style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                      <div className="card-overlay" />
+                    </div>
+                    <div className="card-content">
+                      <h2 style={{ color: 'var(--text-primary)' }}>Promoted</h2>
+                      <span className="card-link-icon">↗</span>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="studio-card">
+                    <div className="card-image-wrapper" style={{ background: 'rgba(0,0,0,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(0,0,0,0.08)' }}>
+                      <span style={{ color: '#aaaaaa', fontSize: '0.8rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Featured Space</span>
+                    </div>
+                    <div className="card-content">
+                      <h2 style={{ color: '#aaaaaa' }}>Promoted</h2>
+                    </div>
                   </div>
-                  <div className="card-content">
-                    <h2 style={{ color: '#aaaaaa' }}>Promoted</h2>
-                  </div>
-                </div>
+                )
               )}
               <StudioCard 
                  name={studio.name} 
