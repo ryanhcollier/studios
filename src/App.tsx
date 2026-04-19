@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/promoted.json?v=${import.meta.env.VITE_APP_VERSION}`)
+    fetch(`/ads/promoted.json?v=${import.meta.env.VITE_APP_VERSION}`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         if (data) setPromotedConfig(data);
