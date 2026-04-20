@@ -252,7 +252,7 @@ const App: React.FC = () => {
                       <div className="card-overlay" />
                     </div>
                     <div className="card-content">
-                      <h2 style={{ color: 'var(--text-primary)' }}>Promoted</h2>
+                      <h2 style={{ color: 'var(--text-primary)', fontStyle: 'italic' }}>Promoted</h2>
                       <span className="card-link-icon">↗</span>
                     </div>
                   </a>
@@ -262,7 +262,7 @@ const App: React.FC = () => {
                       <span style={{ color: '#aaaaaa', fontSize: '0.8rem', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Featured Space</span>
                     </div>
                     <div className="card-content">
-                      <h2 style={{ color: '#aaaaaa' }}>Promoted</h2>
+                      <h2 style={{ color: '#aaaaaa', fontStyle: 'italic' }}>Promoted</h2>
                     </div>
                   </div>
                 )
