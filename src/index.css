@@ -397,6 +397,7 @@ body {
 
 @media (max-width: 768px) {
   .app-container { padding: 2rem 1.5rem; }
+  .app-header { margin-bottom: 2.5rem; }
   .grid-container { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
   
   /* Mobile Filter Stacking */

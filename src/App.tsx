@@ -196,7 +196,7 @@ const App: React.FC = () => {
             <div className="card-overlay" />
           </div>
           <div className="card-content">
-            <h2>{heroStudio.name}</h2>
+            <h2>Featured: {heroStudio.name}</h2>
             <span className="card-link-icon">↗</span>
           </div>
         </a>
